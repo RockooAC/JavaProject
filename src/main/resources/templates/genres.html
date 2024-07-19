@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Genres</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+  <style>
+    body::after {
+      content: "";
+      background-image: url('https://i.redd.it/884e9n88qru81.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.4;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      z-index: -1;
+      filter: blur(8px);
+    }
+  </style>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+  <h2>Genres</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Genre Name</th>
+      <th>Description</th>
+      <th sec:authorize="hasRole('ADMIN')">Image URL</th>
+      <th sec:authorize="hasRole('ADMIN')">Update</th>
+      <th sec:authorize="hasRole('ADMIN')">Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre : ${genres}">
+      <td>
+        <a th:href="@{/genre/{id}/albums(id=${genre.genreId})}">
+          <span th:text="${genre.genreName}"></span>
+        </a>
+      </td>
+      <td>
+        <a th:href="@{/genre/{id}(id=${genre.genreId})}">
+          <span th:text="${genre.description}"></span>
+        </a>
+      </td>
+      <td sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/genre/{id}(id=${genre.genreId})}">
+          <span th:text="${genre.imageUrl}"></span>
+        </a>
+      </td>
+      <td><a th:href="@{/genre/update/{id}(id=${genre.genreId})}" sec:authorize="hasRole('ADMIN')">Update</a></td>
+      <td>
+        <form th:action="@{'/genre/' + ${genre.genreId}}" th:method="post">
+          <input type="hidden" name="_method" value="delete" />
+          <button type="submit" class="btn btn-danger" sec:authorize="hasRole('ADMIN')">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
